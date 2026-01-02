@@ -17,3 +17,4 @@ Candidate Email (Selected / Rejected)
 
 AI-Powered ATS System
 Built an LLM-based applicant tracking system to parse resumes, perform semantic job matching, automate shortlisting, and send decision emails using Google Sheets & Apps Script.
+
