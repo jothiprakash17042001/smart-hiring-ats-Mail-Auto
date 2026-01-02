@@ -1,0 +1,38 @@
+Your google sheet credentional 
+
+How to get 
+
+Step 1: Create Google Cloud Project
+
+Go to https://console.cloud.google.com/
+
+Create a new project
+
+Step 2: Enable APIs
+
+Enable the following APIs:
+
+✅ Google Sheets API
+
+✅ Google Drive API
+
+Step 3: Create Service Account
+
+Go to IAM & Admin → Service Accounts
+
+Click Create Service Account
+
+Assign role:
+
+Editor
+
+
+Create a JSON key
+
+Download the file
+
+Step 4: Rename & Place File
+
+Rename the downloaded file to:
+
+google_creds.json
