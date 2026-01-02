@@ -1,0 +1,9 @@
+nltk
+PyPDF2
+pandas
+gspread
+google-auth
+sentence-transformers
+torch
+scikit-learn
+google-genai
