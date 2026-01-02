@@ -1,0 +1,202 @@
+function sendDecisionEmails() {
+  const sheet = SpreadsheetApp
+    .getActiveSpreadsheet()
+    .getSheetByName("Sheet1");
+
+  const data = sheet.getDataRange().getValues();
+
+  // ✅ Google Drive GIF (your file)
+  const GIF_FILE_ID = "19j6itovHdIwtozZAK0cfb9fsMsXmWXHF";
+  const gifBlob = DriveApp.getFileById(GIF_FILE_ID).getBlob();
+
+  for (let i = 1; i < data.length; i++) {
+    const name = data[i][0];
+    const email = data[i][1];
+    const decision = data[i][4];
+    const mailSent = data[i][5];
+
+    // Skip invalid rows
+    if (!email || mailSent === "YES" || !decision) continue;
+
+    let subject = "";
+    let htmlBody = "";
+
+    // ===================== SELECTED =====================
+    if (decision === "SELECTED") {
+      subject = "Congratulations! You Have Been Shortlisted";
+
+      htmlBody = `
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;">
+  <tr>
+    <td align="center">
+
+      <table width="700" cellpadding="0" cellspacing="0"
+        style="border:1px solid #dddddd; font-family:Arial, Helvetica, sans-serif;">
+
+        <!-- BODY -->
+        <tr>
+          <td style="padding:28px; font-size:14px; line-height:22px; color:#000;">
+            <p>Dear <strong>${name}</strong>,</p>
+
+            <p>
+              Greetings from <strong>Viyona Fintech India Private Limited</strong>.
+            </p>
+
+            <p>
+              We are pleased to inform you that your profile has been
+              <strong>shortlisted</strong> based on our initial screening process.
+            </p>
+
+            <p>
+              Our HR team will contact you shortly regarding the next steps.
+            </p>
+
+            <p>
+              Thank you for your interest in joining us.
+            </p>
+
+            <br/>
+
+            <p>
+              Warm regards,<br/>
+              <strong>Shriya Matumari</strong><br/>
+              Business Human Resource<br/>
+              Viyona Fintech India Private Limited
+            </p>
+          </td>
+        </tr>
+
+        <!-- FOOTER CONTENT -->
+        <tr>
+          <td style="background:#f2f2f2; padding:18px 28px;
+                     font-size:12px; line-height:18px; color:#000;">
+            <strong>Address:</strong><br/>
+            1st Floor, Plot No 197, Kavuri Hills,<br/>
+            Guttalabegumpet, Madhapur, Hyderabad – 500081
+            <br/><br/>
+
+            <strong>Email:</strong>
+            <a href="mailto:ShriyaMatumari@viyonafintech.com"
+               style="color:#1155cc; text-decoration:none;">
+              ShriyaMatumari@viyonafintech.com
+            </a><br/>
+
+            <strong>Website:</strong>
+            <a href="https://www.viyonafintech.com"
+               style="color:#1155cc; text-decoration:none;">
+              www.viyonafintech.com
+            </a>
+          </td>
+        </tr>
+
+        <!-- ✅ DRIVE GIF (FINAL PART) -->
+        <tr>
+          <td style="padding:0;">
+            <img src="cid:footerGif"
+                 width="700"
+                 style="display:block; border:0; margin:0;" />
+          </td>
+        </tr>
+
+      </table>
+
+    </td>
+  </tr>
+</table>
+`;
+    }
+
+    // ===================== REJECTED =====================
+    else if (decision === "REJECTED") {
+      subject = "Application Status Update";
+
+      htmlBody = `
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;">
+  <tr>
+    <td align="center">
+
+      <table width="700" cellpadding="0" cellspacing="0"
+        style="border:1px solid #dddddd; font-family:Arial, Helvetica, sans-serif;">
+
+        <tr>
+          <td style="padding:28px; font-size:14px; line-height:22px; color:#000;">
+            <p>Dear <strong>${name}</strong>,</p>
+
+            <p>
+              Thank you for your interest in
+              <strong>Viyona Fintech India Private Limited</strong>.
+            </p>
+
+            <p>
+              After careful consideration, we regret to inform you that
+              we will not be moving forward with your application at this time.
+            </p>
+
+            <p>
+              We appreciate your time and wish you success in your career.
+            </p>
+
+            <br/>
+
+            <p>
+              Warm regards,<br/>
+              <strong>HR Team</strong><br/>
+              Viyona Fintech India Private Limited
+            </p>
+          </td>
+        </tr>
+
+        <!-- SAME FOOTER -->
+        <tr>
+          <td style="background:#f2f2f2; padding:18px 28px;
+                     font-size:12px; line-height:18px; color:#000;">
+            <strong>Address:</strong><br/>
+            1st Floor, Plot No 197, Kavuri Hills,<br/>
+            Guttalabegumpet, Madhapur, Hyderabad – 500081
+            <br/><br/>
+
+            <strong>Email:</strong>
+            <a href="mailto:ShriyaMatumari@viyonafintech.com"
+               style="color:#1155cc; text-decoration:none;">
+              ShriyaMatumari@viyonafintech.com
+            </a><br/>
+
+            <strong>Website:</strong>
+            <a href="https://www.viyonafintech.com"
+               style="color:#1155cc; text-decoration:none;">
+              www.viyonafintech.com
+            </a>
+          </td>
+        </tr>
+
+        <!-- GIF -->
+        <tr>
+          <td style="padding:0;">
+            <img src="cid:footerGif"
+                 width="700"
+                 style="display:block; border:0; margin:0;" />
+          </td>
+        </tr>
+
+      </table>
+
+    </td>
+  </tr>
+</table>
+`;
+    } else {
+      continue;
+    }
+
+    // ✅ SEND EMAIL WITH INLINE GIF
+    GmailApp.sendEmail(email, subject, "", {
+      htmlBody: htmlBody,
+      inlineImages: {
+        footerGif: gifBlob
+      }
+    });
+
+    // MARK AS SENT
+    sheet.getRange(i + 1, 6).setValue("YES");
+  }
+}
